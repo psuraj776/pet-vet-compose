@@ -2,22 +2,27 @@ version: '3.8'
 services:
   backend:
     build:
-      context: ../pet-vet-backend
+      context: ../pet-backend
+      dockerfile: Dockerfile
     ports:
       - "8080:8080"
     environment:
-      - MONGODB_URI=mongodb://mongo:27017/petvet
+      - SPRING_PROFILE_ACTIVE=dev
+      - SPRING_DATA_MONGODB_URI=mongodb://mongodb:27017/petvet
+    depends_on:
+      - mongodb
     volumes:
-      - logs:/var/log/backend
+      - ../pet-backend/logs:/app/logs
   frontend:
     build:
-      context: ../pet-vet-frontend
+      context: ../pet-frontend
+      dockerfile: Dockerfile
     ports:
       - "3000:3000"
     environment:
       - REACT_APP_API_URL=http://localhost:8080
   mongodb:
-    image: mongo
+    image: mongo:4.4.29
     ports:
       - "27017:27017"
     volumes:
